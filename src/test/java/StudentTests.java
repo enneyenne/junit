@@ -9,24 +9,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StudentTests {
 
-    @RepeatedTest(value = 4, name = "Корректные оценки добавляются в список оценок")
-    public void testAddGradeInRange(RepetitionInfo repetitionInfo) {
+    @ParameterizedTest(name = "Корректные оценки добавляются в список оценок")
+    @MethodSource("GradesGenerator#ints")
+    public void testAddGradeInRange(int x) {
         Student stud = new Student("Kate");
-        int num = repetitionInfo.getCurrentRepetition() + 1;
+        int num = x;
         stud.addGrade(num);
         Assertions.assertEquals(stud.getGrades().get(0), num);
         System.out.println(stud.getGrades());
     }
 
     @ParameterizedTest(name = "Добавление неверных оценок кидает исключение")
-    @MethodSource("GradesGenerator#ints")
+    @MethodSource("GradesGenerator#intsEx")
     public void testAddGradeLessOrMoreThenExpected(int x) {
         Student stud = new Student("Kate");
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> stud.addGrade(x));
+        //Assertions.assertThrows(IllegalArgumentException.class, () -> stud.addGrade(x));
 
-        //        IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> stud.addGrade(x));
-        //        Assertions.assertEquals("Grade must be between 2 and 5!", e.getMessage());
+        IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> stud.addGrade(x));
+        Assertions.assertEquals("Grade must be between 2 and 5!", e.getMessage());
 
     }
 
@@ -36,7 +37,6 @@ public class StudentTests {
         stud1.addGrade(5);
         Student stud2 = new Student("Kate");
         stud2.addGrade(5);
-        //stud2.addGrade(4);
         Assertions.assertEquals(stud1, stud2);
         Assertions.assertTrue(stud1.hashCode() == stud2.hashCode());
     }
